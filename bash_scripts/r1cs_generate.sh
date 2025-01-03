@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e # exits if any error occurs
 
 # Compiles a circom file with some function description generating two files:
 # 	1. circuit.r1cs (the r1cs constraint system of the circuit in binary format).
@@ -15,7 +16,7 @@ fi
 
 
 # circom --r1cs --wasm --c --sym --inspect "$1"  # --c option generates C++ files
-circom --r1cs --wasm --sym --inspect "$1"
+circom --r1cs --wasm --inspect "$1"
 
 
 BASE_FILENAME=$(echo "$1" | cut -d. -f1)

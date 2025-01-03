@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e # exits if any error occurs
 
 # Check https://github.com/iden3/snarkjs for more info
 
@@ -31,21 +32,24 @@ snarkjs powersoftau contribute pot14_0002.ptau pot14_0003.ptau --name="3rd circu
 echo 'Verify the protocol so far'
 snarkjs powersoftau verify pot14_0003.ptau
 
+#
+#echo 'Apply a random beacon'
+#LOG_TIMES_HASH=10 # this must be at least 10
+#until snarkjs powersoftau beacon pot14_0003.ptau pot14_beacon.ptau "$randBeacon" $LOG_TIMES_HASH -n="Final Beacon";
+#do
+#	randBeacon="0f$RANDOM$RANDOM"
+#	echo "Random beacon: $randBeacon"
+#done
 
-echo 'Apply a random beacon'
-LOG_TIMES_HASH=10 # this must be at least 10
-randBeacon="0f$RANDOM$RANDOM"
-echo "Random beacon: $randBeacon"
-snarkjs powersoftau beacon pot14_0003.ptau pot14_beacon.ptau "$randBeacon" $LOG_TIMES_HASH -n="Final Beacon"
 
 echo 'Prepare phase 2 (circuit-dependent step)'
-snarkjs powersoftau prepare phase2 pot14_beacon.ptau __pot14_final.ptau -v
+snarkjs powersoftau prepare phase2 pot14_0003.ptau __pot14_final.ptau -v
 
 echo "Verify the final ptau"
 snarkjs powersoftau verify __pot14_final.ptau
 
 ## cleaning
-rm pot14_0000.ptau pot14_0001.ptau pot14_0002.ptau pot14_0003.ptau pot14_beacon.ptau
+rm pot14_0000.ptau pot14_0001.ptau pot14_0002.ptau pot14_0003.ptau
 mv __pot14_final.ptau "pot$LOG_MAX_CONSTRAINTS".ptau
 
 echo "Generated powers of tau (circuit-independent CRS) in file pot$LOG_MAX_CONSTRAINTS.ptau"

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e # exits if any error occurs
 
 # Takes the wasm file with the annotated R1CS constraints and the input.json file, then generates witness.wtns and witness.json
 

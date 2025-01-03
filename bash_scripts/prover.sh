@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Takes the wasm file with the annotated R1CS constraints and the input.json file, then generates witness.wtns and witness.json
 
@@ -23,3 +24,4 @@ else
 fi
 
 snarkjs groth16 prove $PROVER_KEY $WITNESS proof.json public.json
+echo "Finished"

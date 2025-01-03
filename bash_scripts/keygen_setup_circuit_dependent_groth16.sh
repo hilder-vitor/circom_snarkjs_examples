@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Check https://github.com/iden3/snarkjs for more info
 
@@ -36,18 +37,8 @@ snarkjs zkey contribute circuit_0002.zkey circuit_0003.zkey --name="3st Contribu
 
 snarkjs zkey verify $CIRCUIT_FILE $POT_FILE circuit_0003.zkey
 
-#echo 'Apply a random beacon'
-#LOG_TIMES_HASH=10 # this must be at least 10
-#randBeacon="0f$RANDOM$RANDOM$RANDOM"
-#echo "Random beacon: $randBeacon"
-#snarkjs zkey beacon circuit_0003.zkey circuit_final.zkey "$randBeacon" "$LOG_TIMES_HASH" -n="Final Beacon phase2"
-#
-#
-#echo 'Verify the final zkey'
-#snarkjs zkey verify $CIRCUIT_FILE $POT_FILE circuit_final.zkey
 
 cp circuit_0003.zkey circuit_final.zkey
-
 
 echo 'Export the verification key'
 snarkjs zkey export verificationkey circuit_final.zkey verification_key.json
@@ -55,9 +46,11 @@ snarkjs zkey export verificationkey circuit_final.zkey verification_key.json
 
 
 ## cleaning
-mv circuit_final.zkey "$CIRCUIT_FILE_WITHOUT_EXT"_prover.zkey 
-mv verification_key.json "$CIRCUIT_FILE_WITHOUT_EXT"_verifier.zkey.json
+PROVER_KEY="key_prover_$CIRCUIT_FILE_WITHOUT_EXT.zkey"
+VERIFIER_KEY="key_verifier_$CIRCUIT_FILE_WITHOUT_EXT.zkey.json"
+mv circuit_final.zkey "$PROVER_KEY" 
+mv verification_key.json "$VERIFIER_KEY"
 rm circuit_0000.zkey circuit_0001.zkey circuit_0002.zkey circuit_0003.zkey
 
-echo "Generated keys: $CIRCUIT_FILE_WITHOUT_EXT\_prover.zkey and $CIRCUIT_FILE_WITHOUT_EXT\_verifier.zkey.json"
+echo "Generated keys: $PROVER_KEY and $VERIFIER_KEY"
 
